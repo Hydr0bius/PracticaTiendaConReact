@@ -17,6 +17,46 @@ function App() {
 ];
   const [carrito, setCarrito] = useState([]);
 
+  const agregarProductoAlCarrito = (idProductoAgregar, nombre)=>{
+    //si el carrito no tiene elementos entonces agregamos uno.
+    if(carrito.length === 0){
+      setCarrito([{id: idProductoAgregar, nombre: nombre, cantidad: 1}]);
+    }else{
+      //para poder editar el arreglo hayq ue clonarlo
+      const nuevoCarrito = [...carrito];
+      //comprobamos si el carrito ya tiene el ID del producto agegado
+      const yaEstaEnCarrito = nuevoCarrito.filter((productoDeCarrito)=>{
+        return productoDeCarrito.id === idProductoAgregar
+      }).length>0;
+
+      //si ya tiene el producto entonces lo tenemos que actualizar
+      if(yaEstaEnCarrito){
+        //obtener su posicion en el arreglo
+        nuevoCarrito.forEach((productoDeCarrito, index)=>{
+          if(productoDeCarrito.id === idProductoAgregar){
+            const cantidad = nuevoCarrito[index].cantidad;
+            nuevoCarrito[index] = {
+              id: idProductoAgregar,
+              nombre: nombre,
+              cantidad:cantidad + 1
+            };
+          };
+        });
+        //de otra forma agregamos el producto al arreglo
+      }else{
+        nuevoCarrito.push(
+          {
+            id: idProductoAgregar,
+            nombre: nombre,
+            cantidad: 1,
+          }
+        );
+      };
+      //actualizamos el carrito
+      setCarrito(nuevoCarrito);
+    };
+  };
+
   return (
     <Contenedor>
       <Menu>
@@ -32,6 +72,7 @@ function App() {
           <Route path='/tienda' element={
             <Tienda
               productos={productos}
+              agregarProductoAlCarrito={agregarProductoAlCarrito}
             />}>
 
           </Route>
